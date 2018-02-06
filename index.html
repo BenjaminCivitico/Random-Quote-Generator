@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <!--Meta Tags I have to include-->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+  <title>Random Quote Generator</title>
+  <meta name="author" content="Benjamin Civitico">
+  <meta name="description" content="">
+  <meta name="keywords" content="">
+  <link rel="shortcut icon" href="favicon.ico" type="image/vnd.microsoft.icon">
+
+  <!-- Bootstrap 4.0 CDN -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+  <!-- JQuery -->
+  <script type="text/javascript" src="http://code.jquery.com/jquery-3.3.1.min.js"></script>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Slabo+27px|Open+Sans|Source+Sans+Pro" rel="stylesheet">
+
+  <!-- Google Analytics-->
+  <script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-XXXXXXXX-Y']);
+  _gaq.push(['_trackPageview']);
+  (function()
+  {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+  </script>
+
+  <!-- Pleasing Color Library -->
+  <script type="text/javascript" src="js/randomColor.js"></script>
+
+  <script type="text/javascript">
+
+  $( document ).ready(function(){
+    changePageColor();
+    newQuote();
+    $('#btn-newQuote').click(quotebtnClick);
+  });
+
+  function quotebtnClick(){
+    newQuote();
+    changePageColor();
+  }
+
+  function tweetBtn(quoteText, quoteAuthor){
+    $('#btn-tweet').attr( "href", "https://twitter.com/intent/tweet?text=" + quoteText + " - " + quoteAuthor + "&hashtags=" + quoteAuthor.split(' ').join('') + ",quote");
+  }
+
+
+  function changePageColor(){
+    var color = randomColor();
+    $("#pageContent").css("background", color);
+    $("#btn-newQuote").css("background", color);
+    $("#btn-newQuote").css("border", color);
+
+    $("#btn-tweet").css("background", color);
+    $("#btn-tweet").css("border", color);
+  }
+
+  function newQuote(){
+    $.getJSON("http://quotesondesign.com/wp-json/posts?filter[orderby]=rand&filter[posts_per_page]=1&callback=&"+ new Date().getTime(), function(a) {
+      $("#quote").html(a[0].content + "<p>— " + a[0].title + "</p>");
+      tweetBtn(a[0].content.length < 100 ? a[0].content.substring(3, a[0].content.length-5) : a[0].content.substring(0,100), a[0].title);
+    });
+  }
+
+
+  </script>
+
+  <style>
+  body{
+    margin-top: 5px;
+  }
+  h1{
+    font-weight: bold;
+    font-family: 'Slabo+27px', serif;
+  }
+
+  p{
+    font-family: 'Source Sans Pro', sans-serif; 
+  }
+
+  #quoteBox{
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+  }
+  #pageContent{
+    height: 90vh;
+    transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+  }
+  #btn-tweet{
+    color: white;
+  }
+  .btn:focus {
+    outline: none;
+    box-shadow: none;
+  }
+  .btn-primary:focus, .btn:active:focus, .btn-primary:not(:disabled):not(.disabled).active:focus, .btn-primary:not(:disabled):not(.disabled):active:focus, .show>.btn-primary.dropdown-toggle:focus{
+    box-shadow: none;
+  }
+
+  </style>
+
+
+
+</head>
+<body>
+  <div id="pageContent" class="container-fluid d-flex align-items-center justify-contents-center">
+    <div id="quoteBox" class="container p-2">
+      <div id="quote"></div>
+      <div id="controls" class="container">
+        <div class="row justify-content-between">
+          <div class="col-auto mr-auto">
+            <a id="btn-tweet" class="btn btn-primary">Tweet!</a>
+          </div>
+          <div class="col-auto">
+            <button id="btn-newQuote" type="button" class="btn btn-primary">New Quote</button>
+          </div>
+        </div> 
+      </div>
+    </div>
+  </div>
+  <div class="footer">
+    <hr>
+    <p class="text-center">Written and coded by <a href="http://benjamin.civitico.com">Benjamin Civitico</a></p>
+  </div>
+</body>
+</html>
